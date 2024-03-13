@@ -7,8 +7,8 @@ from telegramdata import load_tasks, save_tasks, new_task, list_tasks, reset_tas
 
 
 
-KEY_API = "YOUR_KEY"
-chat_id = "YOUR_CHAT"
+KEY_API = "7196493208:AAHLyxdg5EXxh7RoESxIZNt6MJTYIrH02so"
+chat_id = "5329866765"
 bot = telebot.TeleBot(KEY_API)
 
 
@@ -19,7 +19,6 @@ def send_reminder(task_info):
     start_time, end_time, description = task_info
     bot.send_message(chat_id, f"Lembrete:\n\n{start_time} - {end_time}: {description}")
 
-schedule_tasks = set()
 
 # Verification if is time to send a reminder
 def schedule_task_reminders():
@@ -30,6 +29,26 @@ def schedule_task_reminders():
                 end_time, description = task_info
                 schedule.every().day.at(start_time).do(send_reminder, task_info=(start_time, end_time, description))
                 schedule_tasks.add(start_time)
+
+
+# Function to reschedule tasks that have passed for the next working day
+def reschedule_tasks():
+    today = datetime.now()
+    next_workday = today + timedelta(days=1)
+    while next_workday.weekday() >= 5:
+        next_workday += timedelta(days=1)
+
+    tasks = load_tasks()
+    for task_type, task_dict in tasks.items():
+        for start_time, task_info in task_dict.items():
+            task_datetime = datetime.combine(today.date(), datetime.strptime(start_time, "%H:%M").time())
+            if task_datetime < today:
+                new_start_time = datetime.combine(next_workday.date(), datetime.strptime(start_time, "%H:%M").time())
+                new_start_time_str = new_start_time.strftime("%H:%M")
+                task_dict[new_start_time_str] = task_info
+                del task_dict[start_time]
+    
+    save_tasks(tasks)
 
 
 # Function to execute the bot.polling() in a separate thread
@@ -313,10 +332,15 @@ def remove_task_handler(message):
 
 
 
+# To storage tasks
+schedule_tasks = set()
+
+
 # Reminder programation
 schedule_task_reminders()
 schedule.every().day.at("05:30").do(morning_message)
 schedule.every().saturday.at("00:00").do(reset_tasks)
+schedule.every().hour.do(reschedule_tasks)
 
 
 # Start the thread for the bot.polling()
