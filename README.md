@@ -21,11 +21,11 @@ Este é um bot Telegram desenvolvido em Python que ajuda os usuários a gerencia
    python bottelegram.py
 
 ## Uso
-. Ao enviar o comando 'task', o bot fornecerá uma lista de opções para interação.
-. Use 'adicionar' para adicionar uma nova tarefa, escolhendo entre tarefas fixas ou extras.
-. Use 'editar' para editar uma tarefa existente, selecionando o tipo de tarefa (fixa ou extra) e o horário da tarefa a ser editada.
-. Use 'remover' para remover uma tarefa existente, escolhendo o tipo de tarefa (fixa ou extra) e o horário da tarefa a ser removida.
-. Use 'lembrar' para receber um lembrete da próxima tarefa agendada.
+. Ao enviar o comando 'task', o bot fornecerá uma lista de opções para interação.\n
+. Use 'adicionar' para adicionar uma nova tarefa, escolhendo entre tarefas fixas ou extras.\n
+. Use 'editar' para editar uma tarefa existente, selecionando o tipo de tarefa (fixa ou extra) e o horário da tarefa a ser editada.\n
+. Use 'remover' para remover uma tarefa existente, escolhendo o tipo de tarefa (fixa ou extra) e o horário da tarefa a ser removida.\n
+. Use 'lembrar' para receber um lembrete da próxima tarefa agendada.\n
 . Use 'listar' para ver a lista de tarefas programadas.
 
 ## Contribuilção
