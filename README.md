@@ -13,13 +13,17 @@ Este é um bot Telegram desenvolvido em Python que ajuda os usuários a gerencia
 ## Instalação
 1. Certifique-se de ter o Python instalado em sua máquina.
 2. Clone este repositório:
+   
+   ```
    git clone https://github.com/gsilva1602/bot_telegram
-3. Instale as dependências necessárias:
+4. Instale as dependências necessárias:
+   
+   ```
    pip install -r requirements.txt
-4. Substitua a chave de API do Telegram e o Chat Id no arquivo 'bottelegram.py' pela sua própria chave.
-5. Execute o bot:
+6. Substitua a chave de API do Telegram e o Chat Id no arquivo 'bottelegram.py' pela sua própria chave.
+7. Execute o bot:
+   ```
    python bottelegram.py
-
 ## Uso
 - Ao enviar o comando 'task', o bot fornecerá uma lista de opções para interação.
 - Use 'adicionar' para adicionar uma nova tarefa, escolhendo entre tarefas fixas ou extras.
@@ -28,7 +32,7 @@ Este é um bot Telegram desenvolvido em Python que ajuda os usuários a gerencia
 - Use 'lembrar' para receber um lembrete da próxima tarefa agendada.
 - Use 'listar' para ver a lista de tarefas programadas.
 
-## Contribuilção
+## Contribuição
 Contribuições são sempre bem-vindas!
 Se você encontrar algum problema ou tiver sugestões para melhorar o bot,
 sinta-se à vontade para abrir uma issue ou enviar um pull request.
