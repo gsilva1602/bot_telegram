@@ -7,8 +7,8 @@ from telegramdata import load_tasks, save_tasks, new_task, list_tasks, reset_tas
 
 
 
-KEY_API = "7196493208:AAHLyxdg5EXxh7RoESxIZNt6MJTYIrH02so"
-chat_id = "5329866765"
+KEY_API = "YOUR_KEY"
+CHAT_ID = "YOUR_ID"
 bot = telebot.TeleBot(KEY_API)
 
 
@@ -17,7 +17,7 @@ bot = telebot.TeleBot(KEY_API)
 # Function to send a task reminder
 def send_reminder(task_info):
     start_time, end_time, description = task_info
-    bot.send_message(chat_id, f"Lembrete:\n\n{start_time} - {end_time}: {description}")
+    bot.send_message(CHAT_ID, f"Lembrete:\n\n{start_time} - {end_time}: {description}")
 
 
 # Verification if is time to send a reminder
@@ -82,9 +82,9 @@ def morning_message():
         else:
             good_morning += "Não há tarefas extras para hoje, Senhor."
 
-        bot.send_message(chat_id, good_morning)
+        bot.send_message(CHAT_ID, good_morning)
     else:
-        bot.send_message(chat_id, "Bom dia, Senhor! Aproveite o fim de semana.")
+        bot.send_message(CHAT_ID, "Bom dia, Senhor! Aproveite o fim de semana.")
 
 
 # Load fixed tasks in the beginning
