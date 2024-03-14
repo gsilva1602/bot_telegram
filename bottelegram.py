@@ -353,6 +353,9 @@ polling_thread.start()
 load_fixed_tasks()
 
 
+bot.delete_webhook()
+
+
 # Main bot loop
 while True:
     schedule.run_pending()
