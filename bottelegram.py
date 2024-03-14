@@ -356,4 +356,4 @@ load_fixed_tasks()
 # Main bot loop
 while True:
     schedule.run_pending()
-    time.sleep(1) 
+    time.sleep(1)
