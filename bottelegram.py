@@ -299,25 +299,12 @@ def list_tasks_handler(message):
 def remember_next_task(message):
     all_tasks = {**list_tasks(fixed=True), **list_tasks(fixed=False)}
     actual_hour = datetime.now().strftime("%H:%M")
-
-    sorted_tasks = sorted(all_tasks.items(), key=lambda x: x[0])
-
-    next_task = None
-    for start_time, task_info in sorted_tasks:
-        if start_time >= actual_hour:
-            next_task = (start_time, task_info)
-            break
+    next_task = [(time, task) for time, task in all_tasks.items() if time >= actual_hour]
     
     # Send the next task
     if next_task:
-        next_time, next_task = next_task
-        if isinstance(next_task, list):
-            end_time, description = next_task[:2]
-        elif isinstance(next_task, dict):
-            end_time = next_task.get('end_time', '')
-            description = next_task.get('description', '')
-
-        bot.reply_to(message, f"Aqui está a sua próxima tarefa:\n\n{next_time} - {end_time}: {description}")
+        next_time, next_task = min(next_task, key=lambda x: x[0])
+        bot.reply_to(message, f"Aqui está a sua próxima tarefa:\n\n{next_time} - {next_task[0]}: {next_task[1]}")
     else:
         bot.reply_to(message, "Não há mais tarefas agendadas para hoje, Senhor.")
 
