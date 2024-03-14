@@ -7,8 +7,8 @@ from telegramdata import load_tasks, save_tasks, new_task, list_tasks, reset_tas
 
 
 
-KEY_API = "YOUR_KEY"
-CHAT_ID = "YOUR_ID"
+KEY_API = "7196493208:AAHLyxdg5EXxh7RoESxIZNt6MJTYIrH02so"
+CHAT_ID = "5329866765"
 bot = telebot.TeleBot(KEY_API)
 
 
