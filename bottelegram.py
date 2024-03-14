@@ -354,7 +354,8 @@ load_fixed_tasks()
 
 
 # Start the webhook
-bot.remove_webhook()
+bot.delete_webhook(True)
+
 
 
 # Main bot loop
