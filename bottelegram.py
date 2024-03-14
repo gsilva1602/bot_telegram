@@ -357,11 +357,7 @@ load_fixed_tasks()
 bot.delete_webhook(True)
 
 
-
 # Main bot loop
 while True:
-    try:
-        schedule.run_pending()
-        time.sleep(1)
-    except KeyboardInterrupt:
-        break  
+    schedule.run_pending()
+    time.sleep(1) 
