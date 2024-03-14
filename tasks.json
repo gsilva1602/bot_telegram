@@ -21,5 +21,10 @@
             "Ir para o trabalho"
         ]
     },
-    "extra_tasks": {}
+    "extra_tasks": {
+        "19:30": [
+            "20:00",
+            "Fazer a homework"
+        ]
+    }
 }
