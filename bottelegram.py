@@ -355,5 +355,8 @@ load_fixed_tasks()
 
 # Main bot loop
 while True:
-    schedule.run_pending()
-    time.sleep(1)  
+    try:
+        schedule.run_pending()
+        time.sleep(1)
+    except KeyboardInterrupt:
+        break  
