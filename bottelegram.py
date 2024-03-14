@@ -55,7 +55,7 @@ def reschedule_tasks():
 # Function to execute the bot.polling() in a separate thread
 def polling_thread():
     while True:
-        bot.polling(none_stop=True)
+        bot.infinity_polling()
 
 
 # Function to remember the tasks in the morning
