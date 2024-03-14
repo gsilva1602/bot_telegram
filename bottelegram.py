@@ -332,6 +332,11 @@ def remove_task_handler(message):
     bot.register_next_step_handler(message, process_remove_task_type)
 
 
+@bot.message_handler(func=lambda message: message.text.lower() == "horas")
+def time_now(message):
+    bot.reply_to(message, f"Agora são {datetime.now()}, Senhor")
+
+
 
 # To storage tasks
 schedule_tasks = set()
