@@ -10,8 +10,7 @@ from telegramdata import load_tasks, save_tasks, new_task, list_tasks, reset_tas
 KEY_API = "7196493208:AAFuiAJTFglrG_09AuupgWwOqkiwYNZPWfU"
 CHAT_ID = "5329866765"
 bot = telebot.TeleBot(KEY_API)
-bot.remove_webhook()
-bot.set_webhook(url="https://api.render.com/deploy/srv-cnpftm779t8c73b89v00?key=skJjdqp-Tc0")
+
 
 
 
@@ -349,8 +348,13 @@ schedule.every().hour.do(reschedule_tasks)
 polling_thread = threading.Thread(target=polling_thread)
 polling_thread.start()
 
+
 # Call load fixed tasks
 load_fixed_tasks()
+
+
+# Start the webhook
+bot.remove_webhook()
 
 
 # Main bot loop
