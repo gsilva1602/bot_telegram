@@ -359,7 +359,7 @@ polling_thread.start()
 # Call load fixed tasks
 load_fixed_tasks()
 
-bot.delete_webhook()
+bot.remove_webhook()
 
 # Main bot loop
 while True:
