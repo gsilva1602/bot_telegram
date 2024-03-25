@@ -9,7 +9,10 @@ from telegramdata import load_tasks, save_tasks, new_task, list_tasks, reset_tas
 
 KEY_API = "7196493208:AAFuiAJTFglrG_09AuupgWwOqkiwYNZPWfU"
 CHAT_ID = "5329866765"
+WEBHOOK_URL = "https://api.render.com/deploy/srv-cnpkhvun7f5s73c5ujhg?key=g1FZ7t1-hMI"
 bot = telebot.TeleBot(KEY_API)
+bot.remove_webhook()
+bot.set_webhook(url=WEBHOOK_URL)
 
 
 
@@ -54,8 +57,11 @@ def reschedule_tasks():
 
 # Function to execute the bot.polling() in a separate thread
 def polling_thread():
-    while True:
-        bot.polling()
+    try:
+        while True:
+            bot.polling(none_stop=True)
+    except Exception as e:
+        print(f"Erro no polling_thread: {e}")
 
 
 # Function to remember the tasks in the morning
@@ -357,7 +363,6 @@ polling_thread.start()
 # Call load fixed tasks
 load_fixed_tasks()
 
-bot.delete_webhook()
 
 # Main bot loop
 while True:
