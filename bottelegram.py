@@ -55,7 +55,7 @@ def reschedule_tasks():
 # Function to execute the bot.polling() in a separate thread
 def polling_thread():
     while True:
-        bot.infinity_polling()
+        bot.polling(none_stop=True)
 
 
 # Function to remember the tasks in the morning
@@ -356,9 +356,6 @@ polling_thread.start()
 
 # Call load fixed tasks
 load_fixed_tasks()
-
-
-bot.delete_webhook()
 
 
 # Main bot loop
