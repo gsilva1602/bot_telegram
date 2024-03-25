@@ -9,7 +9,9 @@ from telegramdata import load_tasks, save_tasks, new_task, list_tasks, reset_tas
 
 KEY_API = "7196493208:AAFuiAJTFglrG_09AuupgWwOqkiwYNZPWfU"
 CHAT_ID = "5329866765"
+WEBHOOK_URL = "https://api.render.com/deploy/srv-cnpkhvun7f5s73c5ujhg?key=g1FZ7t1-hMI"
 bot = telebot.TeleBot(KEY_API)
+bot.set_webhook(url=WEBHOOK_URL)
 
 
 
@@ -357,9 +359,7 @@ polling_thread.start()
 # Call load fixed tasks
 load_fixed_tasks()
 
-
 bot.remove_webhook()
-
 
 # Main bot loop
 while True:
