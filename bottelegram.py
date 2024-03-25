@@ -9,7 +9,7 @@ from telegramdata import load_tasks, save_tasks, new_task, list_tasks, reset_tas
 
 KEY_API = "7196493208:AAFuiAJTFglrG_09AuupgWwOqkiwYNZPWfU"
 CHAT_ID = "5329866765"
-WEBHOOK_URL = "https://api.render.com/deploy/srv-cnpkhvun7f5s73c5ujhg?key=g1FZ7t1-hMI"
+WEBHOOK_URL = "https://api.render.com/deploy/srv-co10q5gcmk4c73b82kcg?key=GKpyY7UNQMk"
 bot = telebot.TeleBot(KEY_API)
 bot.remove_webhook()
 bot.set_webhook(url=WEBHOOK_URL)
