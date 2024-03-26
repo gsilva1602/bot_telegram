@@ -12,8 +12,6 @@ CHAT_ID = "5329866765"
 WEBHOOK_URL = "https://api.render.com/deploy/srv-co10q5gcmk4c73b82kcg?key=GKpyY7UNQMk"
 bot = telebot.TeleBot(KEY_API)
 
-bot.remove_webhook()
-bot.set_webhook(url=WEBHOOK_URL)
 
 
 ### Assistant Functions ###
@@ -355,7 +353,8 @@ schedule.every().hour.do(reschedule_tasks)
 
 
 # Start the thread for the bot.polling
-
+bot.remove_webhook()
+bot.set_webhook(url=WEBHOOK_URL)
 
 # Call load fixed tasks
 load_fixed_tasks()
