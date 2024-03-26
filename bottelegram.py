@@ -10,7 +10,7 @@ from telegramdata import load_tasks, save_tasks, new_task, list_tasks, reset_tas
 
 key_api = os.environ.get('KEY_API')
 chat_id = os.environ.get('CHAT_ID')
-webhook_url = os.eviron.get('WEBHOOK_URL')
+webhook_url = os.environ.get('WEBHOOK_URL')
 bot = telebot.TeleBot(key_api)
 
 
