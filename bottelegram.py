@@ -10,7 +10,6 @@ from telegramdata import load_tasks, save_tasks, new_task, list_tasks, reset_tas
 
 key_api = os.environ.get('KEY_API')
 chat_id = os.environ.get('CHAT_ID')
-webhook_url = os.environ.get('WEBHOOK_URL')
 bot = telebot.TeleBot(key_api)
 
 
@@ -354,8 +353,7 @@ schedule.every().hour.do(reschedule_tasks)
 
 
 # Start the thread for the bot.polling
-bot.remove_webhook()
-bot.set_webhook(url=webhook_url)
+threading.Thread(target=polling_thread).start()
 
 
 # Call load fixed tasks
