@@ -1,5 +1,6 @@
 import telebot
 import schedule
+import os
 import time
 import threading
 from datetime import datetime, timedelta
@@ -7,10 +8,10 @@ from telegramdata import load_tasks, save_tasks, new_task, list_tasks, reset_tas
 
 
 
-KEY_API = "7196493208:AAFuiAJTFglrG_09AuupgWwOqkiwYNZPWfU"
-CHAT_ID = "5329866765"
-WEBHOOK_URL = "https://api.render.com/deploy/srv-co10q5gcmk4c73b82kcg?key=GKpyY7UNQMk"
-bot = telebot.TeleBot(KEY_API)
+key_api = os.environ.get('KEY_API')
+chat_id = os.environ.get('CHAT_ID')
+webhook_url = os.eviron.get('WEBHOOK_URL')
+bot = telebot.TeleBot(key_api)
 
 
 
@@ -18,7 +19,7 @@ bot = telebot.TeleBot(KEY_API)
 # Function to send a task reminder
 def send_reminder(task_info):
     start_time, end_time, description = task_info
-    bot.send_message(CHAT_ID, f"Lembrete:\n\n{start_time} - {end_time}: {description}")
+    bot.send_message(chat_id, f"Lembrete:\n\n{start_time} - {end_time}: {description}")
 
 
 # Verification if is time to send a reminder
@@ -86,9 +87,9 @@ def morning_message():
         else:
             good_morning += "Não há tarefas extras para hoje, Senhor."
 
-        bot.send_message(CHAT_ID, good_morning)
+        bot.send_message(chat_id, good_morning)
     else:
-        bot.send_message(CHAT_ID, "Bom dia, Senhor! Aproveite o fim de semana.")
+        bot.send_message(chat_id, "Bom dia, Senhor! Aproveite o fim de semana.")
 
 
 # Load fixed tasks in the beginning
@@ -354,7 +355,8 @@ schedule.every().hour.do(reschedule_tasks)
 
 # Start the thread for the bot.polling
 bot.remove_webhook()
-bot.set_webhook(url=WEBHOOK_URL)
+bot.set_webhook(url=webhook_url)
+
 
 # Call load fixed tasks
 load_fixed_tasks()
