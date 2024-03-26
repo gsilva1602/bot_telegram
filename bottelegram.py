@@ -11,7 +11,7 @@ from telegramdata import load_tasks, save_tasks, new_task, list_tasks, reset_tas
 key_api = os.environ.get('KEY_API')
 chat_id = os.environ.get('CHAT_ID')
 bot = telebot.TeleBot(key_api)
-
+bot.delete_webhook()
 
 
 ### Assistant Functions ###
@@ -360,7 +360,7 @@ threading.Thread(target=polling_thread).start()
 load_fixed_tasks()
 
 
-bot.delete_webhook()
+
 
 # Main bot loop
 while True:
