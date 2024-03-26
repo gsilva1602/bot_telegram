@@ -11,7 +11,6 @@ from telegramdata import load_tasks, save_tasks, new_task, list_tasks, reset_tas
 key_api = os.environ.get('KEY_API')
 chat_id = os.environ.get('CHAT_ID')
 webhook_url = os.environ.get('WEBHOOK_URL')
-port = int(os.environ.get('PORT', 80))
 bot = telebot.TeleBot(key_api)
 
 
