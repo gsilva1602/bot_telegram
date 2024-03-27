@@ -34,7 +34,7 @@ def schedule_task_reminders():
 
 # Function to reschedule tasks that have passed for the next working day
 def reschedule_tasks():
-    today = datetime.now() - timedelta(hours=3)
+    today = datetime.now()
     next_workday = today + timedelta(days=1)
     while next_workday.weekday() >= 5:
         next_workday += timedelta(days=1)
@@ -66,7 +66,7 @@ def morning_message():
     fixed_tasks = list_tasks(fixed=True)
     extra_tasks = list_tasks()
 
-    today = (datetime.now() - timedelta(hours=3)).weekday()
+    today = datetime.now().weekday()
 
     if today < 5:
         good_morning = 'Bom dia Senhor! Aqui estão as suas obrigações para hoje:\n\n'
@@ -95,7 +95,7 @@ def morning_message():
 def load_fixed_tasks():
     tasks = load_tasks()
     fixed_tasks = tasks.get('fixed_tasks', {})
-    today = (datetime.now() - timedelta(hours=3)).weekday()
+    today = datetime.now().weekday()
     if today < 5:
         for start_time, task_info in fixed_tasks.items():
             if isinstance(task_info, list):
@@ -302,13 +302,14 @@ def list_tasks_handler(message):
 @bot.message_handler(func=lambda message: message.text.lower() == "lembrar")
 def remember_next_task(message):
     all_tasks = {**list_tasks(fixed=True), **list_tasks(fixed=False)}
-    today = datetime.now() - timedelta(hours=3)
+    today = datetime.now()
     actual_hour = today.strftime("%H:%M")
+    next_task = [(time, task) for time, task in all_tasks.items() if time >= actual_hour]
     
     # Send the next task
-    if actual_hour in all_tasks:
-        task_info = all_tasks[actual_hour]
-        bot.reply_to(message, f"Aqui está a sua próxima tarefa:\n\n{actual_hour} - {task_info[0]}: {task_info[1]}")
+    if next_task:
+        next_time, next_task = min(next_task, key=lambda x: x[0])
+        bot.reply_to(message, f"Aqui está a sua próxima tarefa:\n\n{next_time} - {next_task[0]}: {next_task[1]}")
     else:
         bot.reply_to(message, "Não há mais tarefas agendadas para hoje, Senhor.")
 
@@ -337,7 +338,7 @@ def remove_task_handler(message):
 
 @bot.message_handler(func=lambda message: message.text.lower() == "horas")
 def time_now(message):
-    today = datetime.now() - timedelta(hours=3)
+    today = datetime.now()
     bot.reply_to(message, f"Agora são {today}, Senhor")
 
 
