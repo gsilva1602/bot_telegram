@@ -13,6 +13,7 @@ key_api = os.environ.get('KEY_API')
 chat_id = os.environ.get('CHAT_ID')
 bot = telebot.TeleBot(key_api)
 os.environ['TZ'] = 'America/Sao_Paulo'
+time.timezone
 bot.delete_webhook()
 
 
