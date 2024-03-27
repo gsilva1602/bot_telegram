@@ -26,9 +26,9 @@ Este é um bot Telegram desenvolvido em Python que ajuda os usuários a gerencia
    ```
    pip install -r requirements.txt
 3. Obtenha um Token API seguindo as instruções em [BotFather](https://core.telegram.org/bots#botfather).
-4. Substitua o valor "YOUR_KEY" no arquivo bottelegram.py pelo seu token.
+4. Substitua o valor "KEY_API" no arquivo bottelegram.py pelo token fornecido pelo BotFather.
 5. Obtenha o Chat ID em acessando "https://api.telegram.org/bot{bot_token}/getUpdates".
-6. Substitua o valor "YOUR_CHAT" no arquivo bottelegram.py pelo seu Id.
+6. Substitua o valor "CHAT_ID" no arquivo bottelegram.py pelo Id obtido acima.
 7. Execute o bot:
    ```
    python bottelegram.py
