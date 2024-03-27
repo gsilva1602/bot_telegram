@@ -12,7 +12,7 @@ from telegramdata import load_tasks, save_tasks, new_task, list_tasks, reset_tas
 key_api = os.environ.get('KEY_API')
 chat_id = os.environ.get('CHAT_ID')
 bot = telebot.TeleBot(key_api)
-timezone = pytz.timezone('America/Oregon')
+timezone = pytz.timezone('America/Sao_Paulo')
 current_time = datetime.now(timezone)
 bot.delete_webhook()
 
