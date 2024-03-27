@@ -3,6 +3,7 @@ import schedule
 import os
 import time
 import threading
+import pytz
 from datetime import datetime, timedelta
 from telegramdata import load_tasks, save_tasks, new_task, list_tasks, reset_tasks
 
@@ -11,8 +12,8 @@ from telegramdata import load_tasks, save_tasks, new_task, list_tasks, reset_tas
 key_api = os.environ.get('KEY_API')
 chat_id = os.environ.get('CHAT_ID')
 bot = telebot.TeleBot(key_api)
-os.environ['TZ'] = 'America/Sao_Paulo'
-time.tzset()
+timezone = pytz.timezone('America/Sao_Paulo')
+current_time = datetime.now(timezone)
 bot.delete_webhook()
 
 
