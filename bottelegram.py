@@ -304,12 +304,11 @@ def remember_next_task(message):
     all_tasks = {**list_tasks(fixed=True), **list_tasks(fixed=False)}
     today = datetime.now() - timedelta(hours=3)
     actual_hour = today.strftime("%H:%M")
-    next_task = [(time, task) for time, task in all_tasks.items() if time >= actual_hour]
     
     # Send the next task
-    if next_task:
-        next_time, next_task = min(next_task, key=lambda x: x[0])
-        bot.reply_to(message, f"Aqui está a sua próxima tarefa:\n\n{next_time} - {next_task[0]}: {next_task[1]}")
+    if actual_hour in all_tasks:
+        task_info = all_tasks[actual_hour]
+        bot.reply_to(message, f"Aqui está a sua próxima tarefa:\n\n{actual_hour} - {task_info[0]}: {task_info[1]}")
     else:
         bot.reply_to(message, "Não há mais tarefas agendadas para hoje, Senhor.")
 
