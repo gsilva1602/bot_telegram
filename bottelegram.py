@@ -35,7 +35,7 @@ def schedule_task_reminders():
 
 # Function to reschedule tasks that have passed for the next working day
 def reschedule_tasks():
-    today = datetime.now() - timedelta(hours=3)
+    today = datetime.now().timestamp()
     next_workday = today + timedelta(days=1)
     while next_workday.weekday() >= 5:
         next_workday += timedelta(days=1)
@@ -67,7 +67,7 @@ def morning_message():
     fixed_tasks = list_tasks(fixed=True)
     extra_tasks = list_tasks()
 
-    today = (datetime.now() - timedelta(hours=3)).weekday()
+    today = (datetime.now().timestamp()).weekday()
 
     if today < 5:
         good_morning = 'Bom dia Senhor! Aqui estão as suas obrigações para hoje:\n\n'
@@ -96,7 +96,7 @@ def morning_message():
 def load_fixed_tasks():
     tasks = load_tasks()
     fixed_tasks = tasks.get('fixed_tasks', {})
-    today = (datetime.now() - timedelta(hours=3)).weekday()
+    today = (datetime.now().timestamp()).weekday()
     if today < 5:
         for start_time, task_info in fixed_tasks.items():
             if isinstance(task_info, list):
@@ -303,7 +303,7 @@ def list_tasks_handler(message):
 @bot.message_handler(func=lambda message: message.text.lower() == "lembrar")
 def remember_next_task(message):
     all_tasks = {**list_tasks(fixed=True), **list_tasks(fixed=False)}
-    today = datetime.now() - timedelta(hours=3)
+    today = datetime.now().timestamp()
     actual_hour = today.strftime("%H:%M")
     next_task = [(time, task) for time, task in all_tasks.items() if time >= actual_hour]
     
@@ -339,7 +339,7 @@ def remove_task_handler(message):
 
 @bot.message_handler(func=lambda message: message.text.lower() == "horas")
 def time_now(message):
-    today = datetime.now()
+    today = datetime.now().timestamp()
     bot.reply_to(message, f"Agora são {today}, Senhor")
 
 
