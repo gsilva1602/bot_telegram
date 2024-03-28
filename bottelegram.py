@@ -118,13 +118,17 @@ def process_task_type(message):
         bot.register_next_step_handler(message, lambda msg: process_start_time(msg, fixed=False))
     else:
         bot.reply_to(message, "Tipo de tarefa inválido, escolha 'fixa' ou 'extra'.")
+        return process_task_type()
 
 
 # Process start time for the task
 def process_start_time(message, fixed):
-    start_time = message.text.strip()
-    bot.reply_to(message, 'Fim (HH:MM):')
-    bot.register_next_step_handler(message, lambda msg: process_description(msg, start_time, fixed))
+    if message.isdigit():
+        start_time = message.text.strip()
+        bot.reply_to(message, 'Fim (HH:MM):')
+        bot.register_next_step_handler(message, lambda msg: process_description(msg, start_time, fixed))
+    else:
+        bot.reply_to(message, "Horário de início incorreto, por favor digite o horário no modelo (HH:MM)")
 
 
 # Process description for the task
