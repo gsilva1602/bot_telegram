@@ -1,6 +1,7 @@
 import telebot
 import schedule
 import os
+import re
 import time
 import threading
 from datetime import datetime, timedelta
@@ -8,10 +9,9 @@ from telegramdata import load_tasks, save_tasks, new_task, list_tasks, reset_tas
 
 
 
-key_api = os.environ.get('KEY_API')
-chat_id = os.environ.get('CHAT_ID')
-port = os.environ.get('PORT')
-tz = os.environ.get('TZ')
+key_api = "KEY_API"
+chat_id = "CHAT_ID"
+
 bot = telebot.TeleBot(key_api)
 bot.delete_webhook()
 
@@ -31,7 +31,7 @@ def schedule_task_reminders():
             if start_time not in schedule_tasks:
                 end_time, description = task_info
                 schedule.every().day.at(start_time).do(send_reminder, task_info=(start_time, end_time, description))
-                schedule_tasks.add(start_time)
+            schedule_tasks.add(start_time)
 
 
 # Function to reschedule tasks that have passed for the next working day
@@ -101,10 +101,10 @@ def load_fixed_tasks():
     if today < 5:
         for start_time, task_info in fixed_tasks.items():
             if isinstance(task_info, list):
-                end_time, description = task_info
+                end_time, description = task_info[:2]
                 new_task(start_time, end_time, description, fixed=True)
             else:
-                new_task(start_time, task_info, fixed=True)
+                new_task(start_time, task_info['description'], task_info['end_time'], fixed=True)
 
 
 # Function to process the type of task to add
@@ -117,25 +117,29 @@ def process_task_type(message):
         bot.reply_to(message, 'Início (HH:MM):')
         bot.register_next_step_handler(message, lambda msg: process_start_time(msg, fixed=False))
     else:
-        bot.reply_to(message, "Tipo de tarefa inválido, escolha 'fixa' ou 'extra'.")
-        return process_task_type()
+        bot.reply_to(message, "Tipo de tarefa inválido!\nPor favor, escolha o tipo de tarefa que deseja adicionar:\n[1] Fixa\n[2] Extra")
+        bot.register_next_step_handler(message, process_task_type)
 
 
 # Process start time for the task
 def process_start_time(message, fixed):
-    if message.isdigit():
-        start_time = message.text.strip()
+    start_time = message.text.strip()
+    if hour_verification(start_time):
         bot.reply_to(message, 'Fim (HH:MM):')
         bot.register_next_step_handler(message, lambda msg: process_description(msg, start_time, fixed))
     else:
-        bot.reply_to(message, "Horário de início incorreto, por favor digite o horário no modelo (HH:MM)")
-
+        bot.reply_to(message, 'Horário inválido! Por favor digite no formato correto.\nInício (HH:MM):')
+        bot.register_next_step_handler(message, lambda msg: process_start_time(msg, fixed))        
 
 # Process description for the task
 def process_description(message, start_time, fixed):
     end_time = message.text.strip()
-    bot.reply_to(message, 'Qual a descrição da tarefa?')
-    bot.register_next_step_handler(message, lambda msg: add_task(msg, start_time, end_time, fixed))
+    if hour_verification(end_time):
+        bot.reply_to(message, 'Qual a descrição da tarefa?')
+        bot.register_next_step_handler(message, lambda msg: add_task(msg, start_time, end_time, fixed))
+    else:
+        bot.reply_to(message, 'Horário inválido! Por favor digite no formato correto.\nFim (HH:MM):')
+        bot.register_next_step_handler(message, lambda msg: process_description(msg, start_time, fixed))
 
 
 # Function to add the task based on user input
@@ -162,7 +166,8 @@ def process_edit_task_type(message):
         bot.reply_to(message, 'Por favor, digite o horário início da tarefa que deseja editar (HH:MM):')
         bot.register_next_step_handler(message, process_edit_extra_task)
     else:
-        bot.reply_to(message, "Tipo de tarefa inválido, escolha 'fixa' ou 'extra'.")
+        bot.reply_to(message, "Tipo de tarefa inválido!\nPor favor, escolha o tipo de tarefa que deseja editar:\n[1] Fixa\n[2] Extra")
+        bot.register_next_step_handler(message, process_edit_task_type)
 
 
 # Function to do the edit of the task
@@ -192,22 +197,30 @@ def process_edit_fixed_task(message):
 # Function to process editing an extra
 def process_edit_extra_task(message):
     old_time = message.text.split()[0]
-    bot.reply_to(message, 'Início (HH:MM):')
+    bot.reply_to(message, 'Digite o horário de início da tarefa que deseja editar (HH:MM):')
     bot.register_next_step_handler(message, lambda msg: process_new_start_time(msg, old_time, fixed=False))
 
 
 # Function to process the new start time for the task
 def process_new_start_time(message, old_time, fixed):
     new_start_time = message.text.strip()
-    bot.reply_to(message, 'Fim (HH:MM):')
-    bot.register_next_step_handler(message, lambda msg: process_new_end_time(msg, old_time, new_start_time, fixed))
+    if hour_verification(new_start_time):
+        bot.reply_to(message, 'Fim (HH:MM):')
+        bot.register_next_step_handler(message, lambda msg: process_new_end_time(msg, old_time, new_start_time, fixed))
+    else:
+        bot.reply_to(message, 'Horário inválido! Por favor digite no formato correto.\nInício (HH:MM):')
+        bot.register_next_step_handler(message, lambda msg: process_new_start_time(msg, old_time, fixed=False))
 
 
 # Function to process the new hour from the task
 def process_new_end_time(message, old_time, new_start_time, fixed):
     new_end_time = message.text.strip()
-    bot.reply_to(message, 'Por favor, digite a nova descrição da tarefa.')
-    bot.register_next_step_handler(message, lambda msg: perform_edit_task(msg, old_time, new_start_time, new_end_time, fixed))
+    if hour_verification(new_end_time):
+        bot.reply_to(message, 'Por favor, digite a nova descrição da tarefa:')
+        bot.register_next_step_handler(message, lambda msg: perform_edit_task(msg, old_time, new_start_time, new_end_time, fixed))
+    else:
+        bot.reply_to(message, 'Horário inválido! Por favor digite no formato correto.\nFim (HH:MM):')
+        bot.register_next_step_handler(message, lambda msg: process_new_end_time(msg, old_time, new_start_time, fixed))
 
 
 # Process the removal of a fixed tasks
@@ -232,7 +245,8 @@ def process_remove_task_type(message):
         bot.reply_to(message, 'Por favor, digite o horário de início da tarefa que deseja remover. (HH:MM)')
         bot.register_next_step_handler(message, process_remove_extra_task)
     else:
-        bot.reply_to(message, "Tipo de tarefa inválido, escolha 'fixa' ou 'extra'.")
+        bot.reply_to(message, "Tipo de tarefa inválido!\nPor favor, escolha o tipo de tarefa que deseja adicionar:\n[1] Fixa\n[2] Extra")
+        bot.register_next_step_handler(message, process_remove_task_type)
 
 
 # Function to do the process for remove a task
@@ -251,6 +265,61 @@ def remove_task(time_to_remove, fixed, message):
         bot.reply_to(message, 'Tarefa removida com sucesso, Senhor! ')
     else:
         bot.reply_to(message, f"Tarefa não encontrada para o horário {time_to_remove}")
+
+
+# Function to send a question if the task was completed
+def ask_task_was_completed(task_info):
+    start_time, end_time, description = task_info
+    bot.send_message(chat_id, f"A tarefa '{description}' iniciada às {start_time} foi cumprida?\n[1] - Sim\n[2] - Não")
+
+    @bot.message_handler(func=lambda message: message.text.strip().lower() in ['1', '2'])
+    def handle_response(message):
+        process_task_completed_response(message)
+
+    @bot.message_handler(func=lambda message: True)
+    def fallback_message(message):
+        bot.reply_to(message, "Por favor, responda com [1] - Sim ou [2] - Não.")
+
+
+# Function to check if the task was completed
+def check_task_completed():
+    tasks = load_tasks()
+    current_time = datetime.now().strftime("%H:%M")
+    for task_type, task_dict in tasks.items():
+        for start_time, task_info in task_dict.items():
+            end_time, description = task_info
+            if end_time == current_time:
+                ask_task_was_completed((start_time, end_time, description))
+
+
+def process_task_completed_response(message):
+    response = message.text.strip().lower()
+    tasks = load_tasks()
+    now = datetime.now().strftime("%H:%M")
+
+    if response in ['1', '2']:
+        if response == '1':
+            for task_type, task_dict in tasks.items():
+                for start_time, task_info in task_dict.items():
+                    if start_time <= now:
+                        if task_type == 'fixed_tasks':
+                            task_info.append("✓")
+                        else:
+                            del task_dict[start_time]
+                        save_tasks(tasks)
+                        break
+            bot.reply_to(message, "Tarefa concluída!")
+        elif response == '2':
+            bot.reply_to(message, "Tarefa não concluída. Voltarei mais tarde, Senhor.")
+            schedule.every(10).minutes.do(check_task_completed)
+    else:
+        bot.reply_to(message, "Resposta inválida. Por favor, selecione:\n[1] - Sim\n[2] - Não")
+
+
+# Function to check the hour when the user write
+def hour_verification(input_text):
+    hour_regex = r'^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$'
+    return re.match(hour_regex, input_text) is not None
 
 
 
@@ -278,11 +347,13 @@ def list_tasks_handler(message):
             for start_time, task_info in sorted(fixed_tasks.items(), key=lambda x: x[0]):
                 if isinstance(task_info, list) and len(task_info) >= 2:
                     end_time, description = task_info[:2]
-                    task_list += f"{start_time} - {end_time}: {description}\n"
+                    status = task_info[2] if len(task_info) > 2 else ''
+                    task_list += f"{start_time} - {end_time}: {description} {status}\n"
                 elif isinstance(task_info, dict):
                     end_time = task_info.get('end_time', '')
                     description = task_info.get('description', '')
-                    task_list += f"{start_time} - {end_time}: {description}\n"
+                    status = task_info.get('status', '')
+                    task_list += f"{start_time} - {end_time}: {description} {status}\n"
         else:
             task_list = 'Sem obrigações hoje, Senhor. Aproveite o final de semana!'
                 
@@ -342,12 +413,6 @@ def remove_task_handler(message):
     bot.register_next_step_handler(message, process_remove_task_type)
 
 
-@bot.message_handler(func=lambda message: message.text.lower() == "horas")
-def time_now(message):
-    today = datetime.now()
-    bot.reply_to(message, f"Agora são {today}, Senhor")
-
-
 
 # To storage tasks
 schedule_tasks = set()
@@ -358,6 +423,7 @@ schedule_task_reminders()
 schedule.every().day.at("05:30").do(morning_message)
 schedule.every().saturday.at("00:00").do(reset_tasks)
 schedule.every().hour.do(reschedule_tasks)
+schedule.every().minute.do(check_task_completed)
 
 
 # Start the thread for the bot.polling
